@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dzikie wysypiska</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0px;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+
+      h3 {
+        font-size: 1em;
+      }
+
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+        border-radius: 3px;
+        padding: 1%;
+      }
+
+      #features {
+        top: 0;
+        height: 20%;
+        margin-top: 20px;
+        width: 23%;
+      }
+
+      #legend {
+        padding: 10px 10px 20px 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        line-height: 18px;
+        height: fit-content;
+        margin-bottom: 40px;
+        width: 100px;
+      }
+
+      .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+      }
+
+      .mapboxgl-ctrl-compass {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="map__container">
+      <div id="map"></div>
+      <div class="map-overlay" id="features">
+        <h2>Dzikie wysypiska w Polsce w latach 2010 - 2019</h2>
+        <div id="pd">
+          <p></p>
+          Najedź myszką na województwo, aby sprawdzić szczegóły.
+        </div>
+      </div>
+      <div class="map-overlay" id="legend"></div>
+    </div>
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoibmF0YWxpYWNob2puYWNrYSIsImEiOiJjanZ4Z202dDAwNGlrNGJtcXF1a3lhbXh1In0.djjjVEHUcv59eZ5zS8Jucg";
+
+      var map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/nataliachojnacka/cknq7gfsf6jr117mp13oa6wz9",
+        center: [21.090571, 52.33169],
+        zoom: 5.15,
+      });
+
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, "top-left");
+
+      var layers = ["31-180", "181-480", "481-855", "856-999", "1000<"];
+      var colors = ["#ffba7a", "#fe662f", "#ef350b", "#cc0e00", "#7a0000"];
+
+      for (i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        var color = colors[i];
+        var item = document.createElement("div");
+        var key = document.createElement("span");
+        key.className = "legend-key";
+        key.style.backgroundColor = color;
+
+        var value = document.createElement("span");
+        value.innerHTML = layer;
+        item.appendChild(key);
+        item.appendChild(value);
+        legend.appendChild(item);
+      }
+      console.log(map);
+      map.on("mousemove", function (e) {
+        var voivodeships = map.queryRenderedFeatures(e.point, {
+          layers: ["test2-3u97by"],
+        });
+
+        if (voivodeships.length > 0) {
+          document.getElementById("pd").innerHTML =
+            "<h3><strong>" +
+            voivodeships[0].properties.JPT_NAZWA_ +
+            "</strong></h3><p><strong><em>" +
+            voivodeships[0].properties.szt_2010 +
+            "</strong></em></p>";
+        } else {
+          document.getElementById("pd").innerHTML =
+            "<p>Najedź myszką na województwo, aby sprawdzić szczegóły.</p>";
+        }
+      });
+    </script>
+  </body>
+</html>
