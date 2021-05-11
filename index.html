@@ -63,7 +63,7 @@
 
       #features {
         top: 0;
-        height: 20%;
+        height: 25%;
         margin-top: 20px;
         width: 23%;
       }
@@ -91,17 +91,19 @@
     </style>
   </head>
   <body>
-    <div class="map__container">
-      <div id="map"></div>
-      <div class="map-overlay" id="features">
-        <h2>Dzikie wysypiska w Polsce w latach 2010 - 2019</h2>
-        <div id="pd">
-          <p></p>
-          Najedź myszką na województwo, aby sprawdzić szczegóły.
-        </div>
+    <div id="map"></div>
+    <div class="map-overlay" id="features">
+      <h2>Dzikie wysypiska w Polsce w latach 2010 - 2019</h2>
+      <label id="year"></label>
+      <input id="slider" type="range" min="0" max="9" step="1" value="0" />
+      <div id="pd">
+        <p></p>
+        Najedź myszką na województwo, aby sprawdzić szczegóły.
       </div>
-      <div class="map-overlay" id="legend"></div>
     </div>
+    <div class="map-overlay" id="legend"></div>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
     <script>
       mapboxgl.accessToken =
         "pk.eyJ1IjoibmF0YWxpYWNob2puYWNrYSIsImEiOiJjanZ4Z202dDAwNGlrNGJtcXF1a3lhbXh1In0.djjjVEHUcv59eZ5zS8Jucg";
@@ -113,44 +115,64 @@
         zoom: 5.15,
       });
 
+      var years = [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+      ];
+
+      function filterBy(year) {
+        var filters = ["==", "year", year];
+        map.setFilter("earthquake-circles", filters);
+        map.setFilter("earthquake-labels", filters);
+        document.getElementById("year").textContent = years[year];
+      }
+
       var nav = new mapboxgl.NavigationControl();
       map.addControl(nav, "top-left");
 
-      var layers = ["31-180", "181-480", "481-855", "856-999", "1000<"];
-      var colors = ["#ffba7a", "#fe662f", "#ef350b", "#cc0e00", "#7a0000"];
+      // var layers = ["31-180", "181-480", "481-855", "856-999", "1000<"];
+      // var colors = ["#ffba7a", "#fe662f", "#ef350b", "#cc0e00", "#7a0000"];
 
-      for (i = 0; i < layers.length; i++) {
-        var layer = layers[i];
-        var color = colors[i];
-        var item = document.createElement("div");
-        var key = document.createElement("span");
-        key.className = "legend-key";
-        key.style.backgroundColor = color;
+      // for (i = 0; i < layers.length; i++) {
+      //   var layer = layers[i];
+      //   var color = colors[i];
+      //   var item = document.createElement("div");
+      //   var key = document.createElement("span");
+      //   key.className = "legend-key";
+      //   key.style.backgroundColor = color;
 
-        var value = document.createElement("span");
-        value.innerHTML = layer;
-        item.appendChild(key);
-        item.appendChild(value);
-        legend.appendChild(item);
-      }
-      console.log(map);
-      map.on("mousemove", function (e) {
-        var voivodeships = map.queryRenderedFeatures(e.point, {
-          layers: ["test2-3u97by"],
-        });
+      //   var value = document.createElement("span");
+      //   value.innerHTML = layer;
+      //   item.appendChild(key);
+      //   item.appendChild(value);
+      //   legend.appendChild(item);
+      // }
+      // console.log(map);
+      // map.on("mousemove", function (e) {
+      //   var voivodeships = map.queryRenderedFeatures(e.point, {
+      //     layers: ["test2-3u97by"],
+      //   });
 
-        if (voivodeships.length > 0) {
-          document.getElementById("pd").innerHTML =
-            "<h3><strong>" +
-            voivodeships[0].properties.JPT_NAZWA_ +
-            "</strong></h3><p><strong><em>" +
-            voivodeships[0].properties.szt_2010 +
-            "</strong></em></p>";
-        } else {
-          document.getElementById("pd").innerHTML =
-            "<p>Najedź myszką na województwo, aby sprawdzić szczegóły.</p>";
-        }
-      });
+      //   if (voivodeships.length > 0) {
+      //     document.getElementById("pd").innerHTML =
+      //       "<h3><strong>" +
+      //       voivodeships[0].properties.JPT_NAZWA_ +
+      //       "</strong></h3><p><strong><em>" +
+      //       voivodeships[0].properties.szt_2010 +
+      //       "</strong></em></p>";
+      //   } else {
+      //     document.getElementById("pd").innerHTML =
+      //       "<p>Najedź myszką na województwo, aby sprawdzić szczegóły.</p>";
+      //   }
+      // });
     </script>
   </body>
 </html>
