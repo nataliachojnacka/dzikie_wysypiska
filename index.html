@@ -98,24 +98,30 @@
       <input id="slider" type="range" min="0" max="9" step="1" value="0" />
       <div id="pd">
         <p></p>
-        Najedź myszką na województwo, aby sprawdzić szczegóły.
+        Najedź myszką na województwo, aby poznać szczegóły.
       </div>
     </div>
     <div class="map-overlay" id="legend"></div>
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
     <script>
       mapboxgl.accessToken =
         "pk.eyJ1IjoibmF0YWxpYWNob2puYWNrYSIsImEiOiJjanZ4Z202dDAwNGlrNGJtcXF1a3lhbXh1In0.djjjVEHUcv59eZ5zS8Jucg";
 
-      var map = new mapboxgl.Map({
+      const map = new mapboxgl.Map({
         container: "map",
-        style: "mapbox://styles/nataliachojnacka/cknq7gfsf6jr117mp13oa6wz9",
+        style: "mapbox://styles/nataliachojnacka/ckoiw10ic5zgq17qe5jqcm6jb",
         center: [21.090571, 52.33169],
         zoom: 5.15,
       });
 
-      var years = [
+      const nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, "top-left");
+
+      // var layers = ["31-180", "181-480", "481-855", "856-999", "1000<"];
+      const colors = ["#ffba7a", "#fe662f", "#ef350b", "#cc0e00", "#7a0000"];
+
+      const years = [
         "2010",
         "2011",
         "2012",
@@ -127,52 +133,60 @@
         "2018",
         "2019",
       ];
+      sliderLabel = document.getElementById("year");
 
-      function filterBy(year) {
-        var filters = ["==", "year", year];
-        map.setFilter("earthquake-circles", filters);
-        map.setFilter("earthquake-labels", filters);
-        document.getElementById("year").textContent = years[year];
+      function switchLayer(value) {
+        const styles = {
+          0: "ckoiw10ic5zgq17qe5jqcm6jb",
+          1: "ckolrk86r203918ozf3snnx5j",
+          2: "ckolsqocu3n4u18plr8acgwwz",
+          3: "ckolstgf521ao18ozvbmw9bdz",
+          4: "ckolsx15m29w418mwcd9786hs",
+          5: "ckolszcj9363g18pf007g11sp",
+          6: "cknq7gfsf6jr117mp13oa6wz9",
+          7: "cknq7gfsf6jr117mp13oa6wz9",
+          8: "cknq7gfsf6jr117mp13oa6wz9",
+          9: "cknq7gfsf6jr117mp13oa6wz9",
+        };
+
+        map.setStyle("mapbox://styles/nataliachojnacka/" + styles[value]);
       }
 
-      var nav = new mapboxgl.NavigationControl();
-      map.addControl(nav, "top-left");
+      const labels = {
+        0: "szt_2010",
+        1: "szt_2011",
+        2: "szt_2012",
+        3: "szt_2013",
+        4: "szt_2014",
+        5: "szt_2015",
+        6: "szt_2016",
+        7: "szt_2017",
+        8: "szt_2018",
+        9: "szt_2019",
+      };
 
-      // var layers = ["31-180", "181-480", "481-855", "856-999", "1000<"];
-      // var colors = ["#ffba7a", "#fe662f", "#ef350b", "#cc0e00", "#7a0000"];
+      document.getElementById("slider").addEventListener("input", function (e) {
+        switchLayer(e.target.value);
+        document.getElementById("year").innerHTML(labels(value));
+      });
 
-      // for (i = 0; i < layers.length; i++) {
-      //   var layer = layers[i];
-      //   var color = colors[i];
-      //   var item = document.createElement("div");
-      //   var key = document.createElement("span");
-      //   key.className = "legend-key";
-      //   key.style.backgroundColor = color;
-
-      //   var value = document.createElement("span");
-      //   value.innerHTML = layer;
-      //   item.appendChild(key);
-      //   item.appendChild(value);
-      //   legend.appendChild(item);
-      // }
-      // console.log(map);
-      // map.on("mousemove", function (e) {
-      //   var voivodeships = map.queryRenderedFeatures(e.point, {
-      //     layers: ["test2-3u97by"],
-      //   });
-
-      //   if (voivodeships.length > 0) {
-      //     document.getElementById("pd").innerHTML =
-      //       "<h3><strong>" +
-      //       voivodeships[0].properties.JPT_NAZWA_ +
-      //       "</strong></h3><p><strong><em>" +
-      //       voivodeships[0].properties.szt_2010 +
-      //       "</strong></em></p>";
-      //   } else {
-      //     document.getElementById("pd").innerHTML =
-      //       "<p>Najedź myszką na województwo, aby sprawdzić szczegóły.</p>";
-      //   }
-      // });
+      map.on("mousemove", function (e) {
+        const voivodeships = map.queryRenderedFeatures(e.point, {
+          layers: ["choropleth-fill"],
+        });
+        if (voivodeships.length > 0) {
+          document.getElementById("pd").innerHTML =
+            "<h3><strong>" +
+            voivodeships[0].properties.JPT_NAZWA_ +
+            "</strong></h3><p><strong><em>" +
+            voivodeships[0].properties.szt_2010 +
+            "</strong> sztuk</em></p>";
+          // console.log(voivodeships[0].properties.labels[value]);
+        } else {
+          document.getElementById("pd").innerHTML =
+            "<p>Najedź myszką na województwo, aby poznać szczegóły.</p>";
+        }
+      });
     </script>
   </body>
 </html>
