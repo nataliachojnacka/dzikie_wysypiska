@@ -54,7 +54,7 @@
         position: absolute;
         bottom: 0;
         right: 0;
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.7);
         margin-right: 20px;
         font-family: Arial, sans-serif;
         overflow: hidden;
@@ -64,26 +64,18 @@
 
       #features {
         top: 0;
-        height: 23%;
+        height: fit-content;
         margin-top: 20px;
         width: 23%;
       }
 
       #legend {
-        padding: 10px 10px 20px 10px;
+        padding: 12px 12px 0px 12px;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         line-height: 18px;
         height: fit-content;
         margin-bottom: 40px;
-        width: 100px;
-      }
-
-      .legend-key {
-        display: inline-block;
-        border-radius: 20%;
-        width: 15px;
-        height: 15px;
-        margin-right: 5px;
+        width: fit-content;
       }
 
       .mapboxgl-ctrl-compass {
@@ -92,6 +84,40 @@
 
       .slider__container {
         padding-left: 10px;
+      }
+
+      .legend {
+        margin-bottom: 20px;
+      }
+
+      .row {
+        height: 12px;
+        width: 100%;
+      }
+
+      .colors {
+        background: linear-gradient(
+          to right,
+          #ffba7a,
+          #ff9257,
+          #fe662f,
+          #ef350b,
+          #cc0e00,
+          #a30000
+        );
+        margin-bottom: 5px;
+        width: 280px;
+      }
+
+      .row.labels {
+        width: 280px;
+        text-align: center;
+      }
+      .label {
+        width: 40px;
+        display: inline-block;
+        text-align: center;
+        font-size: 14px;
       }
     </style>
   </head>
@@ -108,7 +134,19 @@
         Najedź myszką na województwo, aby poznać szczegóły.
       </div>
     </div>
-    <div class="map-overlay" id="legend"></div>
+    <div class="map-overlay" id="legend">
+      <div class="legend">
+        <div class="row colors"></div>
+        <div class="row labels">
+          <div class="label">≤ 80</div>
+          <div class="label">160</div>
+          <div class="label">240</div>
+          <div class="label">320</div>
+          <div class="label">400</div>
+          <div class="label">481 ≤</div>
+        </div>
+      </div>
+    </div>
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
     <script>
@@ -177,6 +215,7 @@
             "<p>Najedź myszką na województwo, aby poznać szczegóły.</p>";
         }
       });
+      // TODO: zaktualizowac przedzialy kolorow w mapboxie, dodac legende
     </script>
   </body>
 </html>
